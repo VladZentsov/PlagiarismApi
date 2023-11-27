@@ -12,5 +12,7 @@ namespace Plagiarism_BLL.CoreModels
         public string Surname { get; set; }
         public int UniversityYear { get; set; }
         public string GroupName { get; set; }
+        public string Email { get; set; }
+        public string PassHash { get; set; }
     }
 }

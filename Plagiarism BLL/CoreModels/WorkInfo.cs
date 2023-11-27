@@ -9,8 +9,9 @@ namespace Plagiarism_BLL.CoreModels
 {
     public class WorkInfo: BaseModel
     {
-        public int UserId { get; set; }
-        public int WorkId { get; set; }
+        public Guid UserId { get; set; }
+        public Guid WorkId { get; set; }
         public WorkType WorkType { get; set; }
+        public string WorkName { get; set; }
     }
 }

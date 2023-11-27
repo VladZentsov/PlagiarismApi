@@ -9,10 +9,10 @@ namespace Plagiarism_BLL.RepositoryInterfaces
 {
     public interface ICRUD<T> where T : BaseModel
     {
-        public Task CreataAsync();
-        public Task<T> GetByIdAsync(int id);
+        public Task CreataAsync(T model);
+        public Task<T> GetByIdAsync(Guid id);
         public Task<List<T>> GetAllAsync();
         public Task<T> UpdateAsync(T model);
-        public Task DeleteAsync(int id);
+        public Task DeleteAsync(Guid id);
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plagiarism_BLL.Services.Interfaces
+namespace Plagiarism_BLL.Security
 {
-    internal interface IWorkInfoService
+    internal class PasswordsUtil
     {
     }
 }

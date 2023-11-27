@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plagiarism_BLL.CoreModels
+namespace Plagiarism_BLL.DTOs
 {
-    public class BaseModel
+    internal class UserDto
     {
-        public Guid Id { get; set; }
     }
 }
