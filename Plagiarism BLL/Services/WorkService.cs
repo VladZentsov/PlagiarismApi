@@ -25,7 +25,7 @@ namespace Plagiarism_BLL.Services
                 Id = Guid.NewGuid(),
                 Data = data,
             };
-            await _unitOfWork.WorkRepository.CreataAsync(work);
+            await _unitOfWork.WorkRepository.CreateAsync(work);
 
             WorkInfo workInfo = new WorkInfo()
             {
@@ -35,7 +35,7 @@ namespace Plagiarism_BLL.Services
                 WorkType = workType,
             };
 
-            await _unitOfWork.WorkInfoRepository.CreataAsync(workInfo);
+            await _unitOfWork.WorkInfoRepository.CreateAsync(workInfo);
 
             await _unitOfWork.SaveAsync();
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Plagiarism_BLL.UnitOfWork
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork
     {
         public IUserRepository UserRepository { get;}
         public IWorkInfoRepository WorkInfoRepository { get;}

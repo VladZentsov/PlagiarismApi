@@ -9,5 +9,6 @@ namespace Plagiarism_BLL.RepositoryInterfaces
 {
     public interface IUserRepository: ICRUD<User>
     {
+        public Task<User> GetByEmailAsync(string email);
     }
 }

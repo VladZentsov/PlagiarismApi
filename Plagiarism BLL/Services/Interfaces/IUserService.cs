@@ -9,7 +9,8 @@ namespace Plagiarism_BLL.Services.Interfaces
 {
     public interface IUserService
     {
-        public Task CreateAccount(UserDto userDto, string password);
+        public Task<UserDto> CreateAccount(UserDto userDto, string password);
         public Task<UserDto> GetAccountInfo(Guid userId);
+        public Task<UserDto> ValidateUser(string email, string pass);
     }
 }

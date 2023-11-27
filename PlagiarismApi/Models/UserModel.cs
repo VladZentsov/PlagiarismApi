@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Plagiarism_BLL.DTOs
+﻿namespace PlagiarismApi.Models
 {
-    public class UserDto
+    public class UserModel
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public int UniversityYear { get; set; }
         public string GroupName { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; }
     }
 }
