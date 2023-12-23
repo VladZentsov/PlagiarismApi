@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Plagiarism_BLL.CoreModels;
 using Plagiarism_BLL.DTOs;
+using Plagiarism_BLL.Enums;
 using Plagiarism_BLL.Services.Interfaces;
 using PlagiarismApi.Models;
 using PlagiarismApi.Security;
@@ -42,6 +43,7 @@ namespace PlagiarismApi.Controllers
         public async Task<IActionResult> CreateAccount([FromBody] UserModel userModel)
         {
             var userDto = _mapper.Map<UserDto>(userModel);
+            userDto.Role = Role.User;
             userDto = await _userService.CreateAccount(userDto, userModel.Password);
 
             var token = JwtHelper.GenerateJwtToken(userDto);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Plagiarism_BLL.CoreModels;
 using Plagiarism_BLL.DTOs;
+using Plagiarism_BLL.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,6 +19,7 @@ namespace PlagiarismApi.Security
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
             };
 
             var token = new JwtSecurityToken(
@@ -29,6 +31,29 @@ namespace PlagiarismApi.Security
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static UserDto GetUserFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+                return null;
+
+            var userId = jsonToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            var email = jsonToken.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email)?.Value;
+            var role = jsonToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
+                return null;
+
+            return new UserDto
+            {
+                Id = Guid.Parse(userId),
+                Email = email,
+                Role = (Role)Enum.Parse(typeof(Role), role)
+            };
         }
     }
 }

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Plagiarism_BLL.CoreModels
 {
-    public class Work: BaseModel
+    public class IdenticalLines
     {
-        public string Code { get; set; }
+        public int CurrentWorkLineNumber { get; set; }
+        public List<int>? WorkToCompareLineNumbers { get; set; }
+         
     }
 }

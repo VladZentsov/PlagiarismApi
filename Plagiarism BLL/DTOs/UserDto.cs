@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plagiarism_BLL.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace Plagiarism_BLL.DTOs
         public int UniversityYear { get; set; }
         public string GroupName { get; set; }
         public string Email { get; set; }
+        public Role Role { get; set; }
     }
 }

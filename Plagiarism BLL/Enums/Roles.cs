@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plagiarism_BLL.CoreModels
+namespace Plagiarism_BLL.Enums
 {
-    public class Work: BaseModel
+    public enum Role
     {
-        public string Code { get; set; }
+        Admin,
+        User
     }
 }

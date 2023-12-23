@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Plagiarism_BLL.CoreModels
 {
-    public class Work: BaseModel
+    public class ParsedWork:BaseModel
     {
-        public string Code { get; set; }
+        public string[] CodeLines { get; set; }
     }
 }
