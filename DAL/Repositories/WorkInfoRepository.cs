@@ -30,9 +30,27 @@ namespace DAL.Repositories
             return await _workInfo.FindAsync(id);
         }
 
+        public async Task<WorkInfo> GetByWorkIdWithDetailsAsync(Guid workId)
+        {
+            return await _workInfo
+                .Include(wi => wi.Work)
+                .Include(wi => wi.User)
+                .FirstOrDefaultAsync(wi => wi.WorkId == workId);
+
+        }
+
         public async Task<List<WorkInfo>> GetAllAsync()
         {
             return await _workInfo.ToListAsync();
+        }
+
+        public async Task<List<WorkInfo>> GetAllWorkWithDetailsAsync()
+        {
+            return await _workInfo
+                .Include(wi => wi.Work)
+                .Include(wi => wi.User)
+                .ToListAsync();
+
         }
 
         public async Task<WorkInfo> UpdateAsync(WorkInfo model)

@@ -9,5 +9,7 @@ namespace Plagiarism_BLL.RepositoryInterfaces
 {
     public interface IWorkInfoRepository:ICRUD<WorkInfo>
     {
+        public Task<WorkInfo> GetByWorkIdWithDetailsAsync(Guid workId);
+        public Task<List<WorkInfo>> GetAllWorkWithDetailsAsync();
     }
 }

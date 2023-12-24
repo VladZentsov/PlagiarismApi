@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Plagiarism_BLL.CoreModels;
 using Plagiarism_BLL.DTOs;
 using Plagiarism_BLL.Enums;
 using Plagiarism_BLL.Services.Interfaces;
@@ -20,23 +19,19 @@ namespace PlagiarismApi.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult<UserDto>> GetUserInfo()
-        //{
-        //    var userDto = _userService.GetAccountInfo()
-        //}
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
-            var user = await _userService.ValidateUser(loginModel.Email, loginModel.Password);
+            var userResult = await _userService.ValidateUser(loginModel.Email, loginModel.Password);
 
-            if (user == null)
+            if (userResult == null)
             {
                 return Unauthorized();
             }
 
-            var token = JwtHelper.GenerateJwtToken(user);
-            return Ok(new { Token = token });
+            userResult.JwtToken = JwtHelper.GenerateJwtToken(userResult);
+
+            return Ok(userResult);
         }
 
         [HttpPost("CreateAccount")]
@@ -44,10 +39,10 @@ namespace PlagiarismApi.Controllers
         {
             var userDto = _mapper.Map<UserDto>(userModel);
             userDto.Role = Role.User;
-            userDto = await _userService.CreateAccount(userDto, userModel.Password);
+            var userResult = await _userService.CreateAccount(userDto, userModel.Password);
 
-            var token = JwtHelper.GenerateJwtToken(userDto);
-            return Ok(new { Token = token });
+            userResult.JwtToken = JwtHelper.GenerateJwtToken(userResult);
+            return Ok(userResult);
         }
     }
 }

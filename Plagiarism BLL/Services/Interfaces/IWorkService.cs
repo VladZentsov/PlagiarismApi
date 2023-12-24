@@ -10,7 +10,9 @@ namespace Plagiarism_BLL.Services.Interfaces
 {
     public interface IWorkService
     {
-        public Task UploadWork(Guid userId, string workName, WorkType workType, string code);
-        public Task<CompareWorksResult> CompareWorks(Guid currentWorkId, Guid workToCompareId);
+        public Task<FullWorkResult> UploadWork(Guid userId, string workName, WorkType workType, string code);
+        public Task<CompareTwoWorksResult> CompareWorks(Guid currentWorkId, Guid workToCompareId);
+        public Task<CompareToAllWorksResult> CompareToAllWorks(Guid currentWorkId);
+        public Task DeleteWork(Guid workId);
     }
 }

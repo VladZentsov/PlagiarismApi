@@ -10,7 +10,7 @@ namespace PlagiarismApi.Security
 {
     public class JwtHelper
     {
-        public static string GenerateJwtToken(UserDto user)
+        public static string GenerateJwtToken(UserResult user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

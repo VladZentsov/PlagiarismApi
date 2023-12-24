@@ -9,7 +9,6 @@ namespace Plagiarism_BLL.CoreModels
     public class IdenticalLines
     {
         public int CurrentWorkLineNumber { get; set; }
-        public List<int>? WorkToCompareLineNumbers { get; set; }
-         
+        public List<int>? WorkToCompareLineNumbers { get; set; } 
     }
 }

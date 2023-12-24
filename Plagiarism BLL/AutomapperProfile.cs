@@ -15,6 +15,12 @@ namespace Plagiarism_BLL
         {
             CreateMap<UserDto, User>()
                 .ReverseMap();
+
+            CreateMap<UserResult, User>()
+                .ReverseMap();
+
+            CreateMap<CompareTwoWorksResult, CompareResult>()
+                .ReverseMap();
         }
     }
 }

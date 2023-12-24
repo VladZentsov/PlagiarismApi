@@ -37,10 +37,9 @@ namespace PlagiarismApi.Controllers
                     {
                         var token = authorizationHeader.Substring("Bearer ".Length).Trim();
                         var user = JwtHelper.GetUserFromToken(token);
-
                         var code = await reader.ReadToEndAsync();
-                        await _workService.UploadWork(user.Id, file.FileName, Plagiarism_BLL.Enums.WorkType.cs, code);
-                        return Ok();
+                        var work = await _workService.UploadWork(user.Id, file.FileName, Plagiarism_BLL.Enums.WorkType.cs, code);
+                        return Ok(work);
                     }
                     else
                     {
@@ -53,10 +52,24 @@ namespace PlagiarismApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         [HttpGet("Compare/{currentWork}/{workToCompare}")]
-        public async Task<CompareWorksResult> CompareWorks(Guid currentWork, Guid workToCompare)
+        public async Task<IActionResult> CompareWorks(Guid currentWork, Guid workToCompare)
         {
-            return await _workService.CompareWorks(currentWork, workToCompare);
+            return Ok(await _workService.CompareWorks(currentWork, workToCompare));
+        }
+
+        [HttpGet("CompareToAll/{currentWork}")]
+        public async Task<IActionResult> CompareToAll(Guid currentWork)
+        {
+            return Ok(await _workService.CompareToAllWorks(currentWork));
+        }
+
+        [HttpDelete("DeleteWork/{workId}")]
+        public async Task<IActionResult> DeleteWork(Guid workId)
+        {
+            await _workService.DeleteWork(workId);
+            return Ok();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Plagiarism_BLL.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<UserDto> CreateAccount(UserDto userDto, string password)
+        public async Task<UserResult> CreateAccount(UserDto userDto, string password)
         {
             userDto.Id = Guid.NewGuid();
             User user = _mapper.Map<User>(userDto);
@@ -31,25 +31,27 @@ namespace Plagiarism_BLL.Services
 
             await _unitOfWork.UserRepository.CreateAsync(user);
             await _unitOfWork.SaveAsync();
-            return userDto;
+
+            UserResult userResult = _mapper.Map<UserResult>(user);
+            return userResult;
         }
 
-        public async Task<UserDto> GetAccountInfo(Guid userId)
+        public async Task<UserResult> GetAccountInfo(Guid userId)
         {
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-            var userDto = _mapper.Map<UserDto>(user);
+            var userResult = _mapper.Map<UserResult>(user);
 
-            return userDto;
+            return userResult;
         }
-        public async Task<UserDto> ValidateUser(string email, string pass)
+        public async Task<UserResult> ValidateUser(string email, string pass)
         {
             var user = await _unitOfWork.UserRepository.GetByEmailAsync(email);
             if (!PasswordsUtil.VerifyPassword(pass, user.PassHash))
                 throw new Exception();
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userResult = _mapper.Map<UserResult>(user);
 
-            return userDto;
+            return userResult;
         }
     }
 }

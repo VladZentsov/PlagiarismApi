@@ -1,4 +1,5 @@
-﻿using Plagiarism_BLL.CoreModels;
+﻿using AutoMapper;
+using Plagiarism_BLL.CoreModels;
 using Plagiarism_BLL.Enums;
 using Plagiarism_BLL.Services.Interfaces;
 using Plagiarism_BLL.UnitOfWork;
@@ -16,12 +17,14 @@ namespace Plagiarism_BLL.Services
         private List<string> ExcludeLines = new List<string>() {"","{","}"};
         private List<string> ExcludedStartsWith = new List<string>() { "using" };
         private readonly IUnitOfWork _unitOfWork;
-        public WorkService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public WorkService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task UploadWork(Guid userId, string workName, WorkType workType, string code)
+        public async Task<FullWorkResult> UploadWork(Guid userId, string workName, WorkType workType, string code)
         {
             Work work = new Work()
             {
@@ -39,18 +42,34 @@ namespace Plagiarism_BLL.Services
             };
 
             await _unitOfWork.WorkInfoRepository.CreateAsync(workInfo);
+            await _unitOfWork.SaveAsync();
 
+            var fullWorkResult = new FullWorkResult()
+            {
+                Id = work.Id,
+                Code = code,
+                WorkName = workName,
+                WorkType = workType,
+            };
+
+            return fullWorkResult;
+        }
+
+        public async Task DeleteWork(Guid workId)
+        {
+            await _unitOfWork.WorkRepository.DeleteAsync(workId);
             await _unitOfWork.SaveAsync();
         }
-        //public async Task GetWorkById(Guid workId)
-        //{
-        //    return _unitOfWork.
-        //}
 
-        public async Task<CompareWorksResult> CompareWorks(Guid currentWorkId, Guid workToCompareId)
+        public async Task<CompareTwoWorksResult> CompareWorks(Guid currentWorkId, Guid workToCompareId)
         {
             var currentWork = await _unitOfWork.WorkRepository.GetByIdAsync(currentWorkId);
             var workToCompare = await _unitOfWork.WorkRepository.GetByIdAsync(workToCompareId);
+            return await CompareTwoWorks(currentWork, workToCompare);
+        }
+        
+        private async Task<CompareTwoWorksResult> CompareTwoWorks(Work currentWork, Work workToCompare)
+        {
             var currentWorkLines = GetWorkRawLines(currentWork);
             var workToCompareLines = GetWorkRawLines(workToCompare);
 
@@ -64,7 +83,7 @@ namespace Plagiarism_BLL.Services
                     .Where(i => workToCompareLines[i].Item1 == line.Item1)
                     .ToList();
 
-                if(indices.Count!=0)
+                if (indices.Count != 0)
                 {
                     List<int> workToCompareLineNumbers = new List<int>();
                     foreach (int index in indices)
@@ -81,7 +100,7 @@ namespace Plagiarism_BLL.Services
             }
             double matchPercentage = (double)identicalLinesList.Count() / currentWorkLines.Count();
 
-            var compareWorksResult = new CompareWorksResult()
+            var compareWorksResult = new CompareTwoWorksResult()
             {
                 IdenticalLines = identicalLinesList,
                 CurrentWork = ParseWork(currentWork),
@@ -92,6 +111,25 @@ namespace Plagiarism_BLL.Services
             return compareWorksResult;
         }
 
+        public async Task<CompareToAllWorksResult> CompareToAllWorks(Guid currentWorkId)
+        {
+            CompareToAllWorksResult compareToAllWorksResult = new CompareToAllWorksResult();
+            var currentWork = await _unitOfWork.WorkRepository.GetByIdAsync(currentWorkId);
+            var allWorksInfos = await _unitOfWork.WorkInfoRepository.GetAllWorkWithDetailsAsync();
+            foreach (var workInfo in allWorksInfos)
+            {
+                var work = workInfo.Work;
+                var compareTwoWorksResult = await CompareTwoWorks(currentWork, work);
+                CompareResult compareResult = _mapper.Map<CompareResult>(compareTwoWorksResult);
+                compareResult.UserName = workInfo.User.Name;
+                compareResult.UserSurname = workInfo.User.Surname;
+                compareResult.UserGroupName = workInfo.User.GroupName;
+                compareResult.WorkName = workInfo.WorkName;
+                compareToAllWorksResult.CompareResults.Add(compareResult);
+            }
+            compareToAllWorksResult.CurrentWork = ParseWork(currentWork);
+            return compareToAllWorksResult;
+        }
         private ParsedWork ParseWork(Work work)
         {
             var workLines = GetWorkLines(work);
@@ -125,7 +163,6 @@ namespace Plagiarism_BLL.Services
 
             return result;
         }
-
         private string[] GetWorkLines(Work work)
         {
             List<string> lines = work.Code.Split("\r\n").ToList();

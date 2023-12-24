@@ -17,11 +17,12 @@ namespace DAL.Repositories
         public UserRepository(IPlagiarismDBContext dbContext)
         {
             _dbContext = dbContext;
-            _users = dbContext.Set<User>(); 
+            _users = dbContext.Set<User>();
         }
         public async Task CreateAsync(User model)
         {
             _users.Add(model);
+
         }
 
         public async Task DeleteAsync(Guid id)

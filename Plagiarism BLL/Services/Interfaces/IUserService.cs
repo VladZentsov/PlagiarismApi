@@ -1,4 +1,5 @@
-﻿using Plagiarism_BLL.DTOs;
+﻿using Plagiarism_BLL.CoreModels;
+using Plagiarism_BLL.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace Plagiarism_BLL.Services.Interfaces
 {
     public interface IUserService
     {
-        public Task<UserDto> CreateAccount(UserDto userDto, string password);
-        public Task<UserDto> GetAccountInfo(Guid userId);
-        public Task<UserDto> ValidateUser(string email, string pass);
+        public Task<UserResult> CreateAccount(UserDto userDto, string password);
+        public Task<UserResult> GetAccountInfo(Guid userId);
+        public Task<UserResult> ValidateUser(string email, string pass);
     }
 }
