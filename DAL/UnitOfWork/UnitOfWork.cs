@@ -39,7 +39,7 @@ namespace DAL.UnitOfWork
             {
                 if (_userRepository == null)
                 {
-                    _userRepository = new UserRepository(_plagiarismDBContext);
+                    _userRepository = new UserRepository(_plagiarismDBContext, _automapperProfile);
                 }
                 return _userRepository;
             }
@@ -51,7 +51,7 @@ namespace DAL.UnitOfWork
             {
                 if (_workInfoRepository == null)
                 {
-                    _workInfoRepository = new WorkInfoRepository(_plagiarismDBContext);
+                    _workInfoRepository = new WorkInfoRepository(_plagiarismDBContext, _automapperProfile);
                 }
                 return _workInfoRepository;
             }
@@ -62,7 +62,7 @@ namespace DAL.UnitOfWork
             {
                 if (_workRepository == null)
                 {
-                    _workRepository = new WorkRepository(_plagiarismDBContext);
+                    _workRepository = new WorkRepository(_plagiarismDBContext, _automapperProfile);
                 }
                 return _workRepository;
             }

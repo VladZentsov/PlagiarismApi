@@ -1,23 +1,22 @@
-﻿using DAL.DBContext;
+﻿using AutoMapper;
+using DAL.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Plagiarism_BLL.CoreModels;
+using Plagiarism_BLL.Exceptions;
 using Plagiarism_BLL.RepositoryInterfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class WorkRepository: IWorkRepository
     {
         private readonly IPlagiarismDBContext _dbContext;
-        public readonly DbSet<Work> _work;
-        public WorkRepository(IPlagiarismDBContext dbContext)
+        private readonly DbSet<Work> _work;
+        private readonly IMapper _mapper;
+        public WorkRepository(IPlagiarismDBContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _work = dbContext.Set<Work>();
+            _mapper = mapper;
         }
 
         public async Task CreateAsync(Work model)
@@ -27,7 +26,13 @@ namespace DAL.Repositories
 
         public async Task<Work> GetByIdAsync(Guid id)
         {
-            return await _work.FindAsync(id);
+            var work = await _work.FindAsync(id);
+            if (work != null)
+            {
+                return work;
+            }
+            else
+                throw new PlagiarismException($"Work with identifier {id} not found.");
         }
 
         public async Task<List<Work>> GetAllAsync()
@@ -38,17 +43,14 @@ namespace DAL.Repositories
         public async Task<Work> UpdateAsync(Work model)
         {
             var workToUpdate = await _work.FindAsync(model.Id);
-            //if (workToUpdate != null)
-            //{
-            //    // Обновление свойств работы
-            //    workToUpdate.Title = model.Title;
-            //    // Другие свойства...
 
-            //    await _dbContext.SaveChangesAsync();
-            //    return workToUpdate;
-            //}
-
-            return null; // Если работа не найдена
+            if (workToUpdate != null)
+            {
+                _mapper.Map(model, workToUpdate);
+                return workToUpdate;
+            }
+            else
+                throw new PlagiarismException($"Work with identifier {model.Id} not found.");
         }
 
         public async Task DeleteAsync(Guid id)
@@ -58,6 +60,8 @@ namespace DAL.Repositories
             {
                 _work.Remove(workToDelete);
             }
+            else
+                throw new PlagiarismException($"Work with identifier {id} not found.");
         }
     }
 }

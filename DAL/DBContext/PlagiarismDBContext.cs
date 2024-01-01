@@ -13,9 +13,12 @@ namespace DAL.DBContext
         public PlagiarismDBContext(DbContextOptions<PlagiarismDBContext> options) : base(options)
         { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Work> Works { get; set; }
-        public DbSet<WorkInfo> WorkInfos { get; set; }
+        public PlagiarismDBContext()
+        { }
+
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Work> Works { get; set; }
+        public virtual DbSet<WorkInfo> WorkInfos { get; set; }
 
 
     }

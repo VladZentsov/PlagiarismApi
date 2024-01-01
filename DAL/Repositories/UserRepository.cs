@@ -1,28 +1,26 @@
-﻿using DAL.DBContext;
+﻿using AutoMapper;
+using DAL.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Plagiarism_BLL.CoreModels;
+using Plagiarism_BLL.Exceptions;
 using Plagiarism_BLL.RepositoryInterfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly IPlagiarismDBContext _dbContext;
-        public readonly DbSet<User> _users;
-        public UserRepository(IPlagiarismDBContext dbContext)
+        private readonly IMapper _mapper;
+        private readonly DbSet<User> _users;
+        public UserRepository(IPlagiarismDBContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
             _users = dbContext.Set<User>();
         }
         public async Task CreateAsync(User model)
         {
             _users.Add(model);
-
         }
 
         public async Task DeleteAsync(Guid id)
@@ -32,6 +30,8 @@ namespace DAL.Repositories
             {
                 _users.Remove(userToDelete);
             }
+            else
+                throw new PlagiarismException($"User with identifier {id} not found.");
         }
 
         public async Task<List<User>> GetAllAsync()
@@ -41,7 +41,11 @@ namespace DAL.Repositories
 
         public async Task<User> GetByIdAsync(Guid id)
         {
-            return await _users.FindAsync(id);
+            var user = await _users.FindAsync(id);
+            if (user != null)
+                return user;
+            else
+                throw new PlagiarismException($"User with identifier {id} not found.");
         }
 
         public async Task<User> UpdateAsync(User model)
@@ -49,15 +53,20 @@ namespace DAL.Repositories
             var userToUpdate = await _users.FindAsync(model.Id);
             if (userToUpdate != null)
             {
-                userToUpdate.Name = model.Name;
+                _mapper.Map(model, userToUpdate);
                 return userToUpdate;
             }
-            return null;
+            else
+                throw new PlagiarismException($"User with identifier {model.Id} not found.");
         }
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+                return user;
+            else
+                throw new PlagiarismException($"User with email {email} not found.");
         }
     }
 }
