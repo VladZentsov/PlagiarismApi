@@ -10,9 +10,13 @@ namespace PlagiarismTest
 {
     public class Comparator
     {
-        public static void PropertyValuesAreEquals(object actual, object expected)
+        public static void PropertyValuesAreEquals(object actual, object expected, PropertyInfo[] expectedPropertyInfos = null)
         {
-            PropertyInfo[] properties = expected.GetType().GetProperties();
+            List<PropertyInfo> properties = expected.GetType().GetProperties().ToList();
+            if(expectedPropertyInfos!=null)
+            {
+                properties.RemoveAll(itemToRemove => expectedPropertyInfos.Contains(itemToRemove));
+            }
             foreach (PropertyInfo property in properties)
             {
                 object expectedValue = property.GetValue(expected, null);

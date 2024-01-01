@@ -15,7 +15,7 @@ namespace PlagiarismTest.DALTests
         public void Setup()
         {
             _plagiarismDBContext = DALMockHelper.DBContext;
-            var mapper = DALMockHelper.CreateMapper();
+            var mapper = MapperHelper.CreateMapper();
             _userRepository = new UserRepository(_plagiarismDBContext, mapper);
         }
 
@@ -40,17 +40,7 @@ namespace PlagiarismTest.DALTests
         {
             //Arrange
             var userId = Guid.NewGuid();
-            var user = new User()
-            {
-                Id = userId,
-                Name = "TestName",
-                Surname = "TestSurname",
-                Email = "TestEmail",
-                GroupName = "TestGroupName",
-                Role = Plagiarism_BLL.Enums.Role.User,
-                UniversityYear = 3,
-                PassHash = "$2a$12$2jqPtyTyTNcFu5AGn.Ka5u/OkTRnnfWStZ2MAA9E1Jp4NG9TTyCtq",
-            };
+            var user = ModelHelper.GenerateTestUser(userId);
 
             //Act
             await _userRepository.CreateAsync(user);
@@ -78,17 +68,7 @@ namespace PlagiarismTest.DALTests
         {
             //Arrange
             var userId = _plagiarismDBContext.Users.FirstOrDefault().Id;
-            var userToUpdate = new User()
-            {
-                Id = userId,
-                Name = "TestName",
-                Surname = "TestSurname",
-                Email = "TestEmail",
-                GroupName = "TestGroupName",
-                Role = Plagiarism_BLL.Enums.Role.User,
-                UniversityYear = 3,
-                PassHash = "$2a$12$2jqPtyTyTNcFu5AGn.Ka5u/OkTRnnfWStZ2MAA9E1Jp4NG9TTyCtq",
-            };
+            var userToUpdate = ModelHelper.GenerateTestUser(userId);
 
             //Act
             await _userRepository.UpdateAsync(userToUpdate);

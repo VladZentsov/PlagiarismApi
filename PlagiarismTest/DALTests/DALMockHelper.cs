@@ -27,17 +27,5 @@ namespace PlagiarismTest.DALTests
                 return context;
             }
         }
-
-        public static IMapper CreateMapper()
-        {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new AutomapperProfile());
-                cfg.AddProfile(new Plagiarism_BLL.AutomapperProfile());
-
-            }).CreateMapper();
-
-            return mapper;
-        }
     }
 }

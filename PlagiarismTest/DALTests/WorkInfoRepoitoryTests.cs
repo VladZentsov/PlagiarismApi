@@ -20,7 +20,7 @@ namespace PlagiarismTest.DALTests
         public void Setup()
         {
             _plagiarismDBContext = DALMockHelper.DBContext;
-            var mapper = DALMockHelper.CreateMapper();
+            var mapper = MapperHelper.CreateMapper();
             _workInfoRepository = new WorkInfoRepository(_plagiarismDBContext, mapper);
         }
 

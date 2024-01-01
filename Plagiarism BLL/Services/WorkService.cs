@@ -116,6 +116,7 @@ namespace Plagiarism_BLL.Services
             CompareToAllWorksResult compareToAllWorksResult = new CompareToAllWorksResult();
             var currentWork = await _unitOfWork.WorkRepository.GetByIdAsync(currentWorkId);
             var allWorksInfos = await _unitOfWork.WorkInfoRepository.GetAllWorkWithDetailsAsync();
+            allWorksInfos = allWorksInfos.Where(w=>w.Work.Id != currentWorkId).ToList();
             foreach (var workInfo in allWorksInfos)
             {
                 var work = workInfo.Work;
